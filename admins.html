@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Meet the Admins — MSCC</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <canvas id="letterCanvas"></canvas>
+
+  <nav id="navbar">
+    <div class="nav-logo"><a href="index.html" style="color:inherit;text-decoration:none;">MSCC</a></div>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="index.html#about">About</a></li>
+      <li><a href="index.html#links">Links</a></li>
+      <li><a href="index.html#showcase">Showcase</a></li>
+      <li><a href="admins.html" class="nav-active">Meet the Admins</a></li>
+    </ul>
+    <div class="nav-hamburger" id="hamburger">&#9776;</div>
+  </nav>
+
+  <section class="admins-hero">
+    <h1>Meet the Admins</h1>
+    <p>The team keeping MSCC alive, warm, and growing.</p>
+  </section>
+
+  <section class="admins-section">
+    <div class="section-inner">
+
+      <!-- Rotating image gallery -->
+      <div class="admins-gallery">
+        <button class="gallery-btn gallery-prev" id="galleryPrev">&#8249;</button>
+        <div class="gallery-track-wrap">
+          <div class="gallery-track" id="galleryTrack">
+            <div class="gallery-slide active">
+              <div class="gallery-img-placeholder">
+                <span>Admin Photo 1</span>
+              </div>
+              <p class="gallery-caption">Admin One — Head Mod</p>
+            </div>
+            <div class="gallery-slide">
+              <div class="gallery-img-placeholder">
+                <span>Admin Photo 2</span>
+              </div>
+              <p class="gallery-caption">Admin Two — Events Lead</p>
+            </div>
+            <div class="gallery-slide">
+              <div class="gallery-img-placeholder">
+                <span>Admin Photo 3</span>
+              </div>
+              <p class="gallery-caption">Admin Three — Art Curator</p>
+            </div>
+            <div class="gallery-slide">
+              <div class="gallery-img-placeholder">
+                <span>Admin Photo 4</span>
+              </div>
+              <p class="gallery-caption">Admin Four — Community Manager</p>
+            </div>
+          </div>
+        </div>
+        <button class="gallery-btn gallery-next" id="galleryNext">&#8250;</button>
+      </div>
+
+      <div class="gallery-dots" id="galleryDots"></div>
+
+      <!-- Admin cards -->
+      <div class="admin-cards">
+        <div class="admin-card">
+          <div class="admin-avatar">A1</div>
+          <div class="admin-info">
+            <h3>Admin One</h3>
+            <span class="admin-role">Head Moderator</span>
+            <p>Keeping the server safe and the vibes immaculate since day one.</p>
+          </div>
+        </div>
+        <div class="admin-card">
+          <div class="admin-avatar">A2</div>
+          <div class="admin-info">
+            <h3>Admin Two</h3>
+            <span class="admin-role">Events Lead</span>
+            <p>Behind every game night, study session, and giveaway you've ever enjoyed.</p>
+          </div>
+        </div>
+        <div class="admin-card">
+          <div class="admin-avatar">A3</div>
+          <div class="admin-info">
+            <h3>Admin Three</h3>
+            <span class="admin-role">Art Curator</span>
+            <p>Championing MSCC's creative community — one showcase at a time.</p>
+          </div>
+        </div>
+        <div class="admin-card">
+          <div class="admin-avatar">A4</div>
+          <div class="admin-info">
+            <h3>Admin Four</h3>
+            <span class="admin-role">Community Manager</span>
+            <p>Your first point of contact for questions, concerns, and suggestions.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-logo">MSCC</p>
+      <p class="footer-sub">Mapua Student Community Circle</p>
+      <p class="footer-copy">&copy; 2025 MSCC. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
