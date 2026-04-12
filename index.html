@@ -126,6 +126,9 @@
     let cursorX = window.innerWidth  / 2;
     let cursorY = window.innerHeight / 2;
 
+    // Start tick loop immediately and keep it running forever
+    rafId = requestAnimationFrame(tick);
+
     // Open curtain
     setTimeout(() => curtain.classList.add('open'), 200);
 
@@ -134,7 +137,6 @@
       setTimeout(() => {
         state[i].active = true;
         el.style.opacity = '1';
-        if (!rafId) { lastTime = null; rafId = requestAnimationFrame(tick); }
       }, 900 + i * 200);
     });
 
@@ -211,7 +213,7 @@
       });
 
       if (!allSettled && state.every(s => !s.active || s.settled)) allSettled = true;
-      rafId = anyMoving ? requestAnimationFrame(tick) : null;
+      rafId = requestAnimationFrame(tick); // always keep running - no cold-start on grab
     }
 
     window.addEventListener('mousedown', e => {
@@ -241,7 +243,6 @@
           s.vy = 0;
 
           e.preventDefault();
-          if (!rafId) { lastTime = null; rafId = requestAnimationFrame(tick); }
         }
       });
     });
@@ -254,13 +255,18 @@
     window.addEventListener('mouseup', () => {
       if (dragging !== null) {
         const s = state[dragging];
-        // Carry drag velocity into free fall; cap it to avoid rocket launches
+        // Cap velocity to avoid rocket launches
         const cap = 2000;
         s.vx = Math.max(-cap, Math.min(cap, s.vx));
         s.vy = Math.max(-cap, Math.min(cap, s.vy));
         s.vrot = s.vx * 0.05;
+        // If released below the floor, pop back to floor level and
+        // give a small upward bounce so it doesn't instantly re-settle
+        if (s.y >= 0) {
+          s.y = 0;
+          s.vy = -Math.max(Math.abs(s.vy), 80);
+        }
         dragging = null;
-        if (!rafId) { lastTime = null; rafId = requestAnimationFrame(tick); }
       }
     });
 
