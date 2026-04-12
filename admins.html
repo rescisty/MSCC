@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<!--
+  ============================================================
+  MSCC — Meet the Admins
+  admins.html — v3
+  ============================================================
+  Changes from v2:
+  - Cards use CSS grid with masonry-style row offsets (margin-top)
+    so alternating cards sit higher/lower — not a uniform grid
+  - Back button uses history.back() so browser back works properly
+  - Page transition overlay present
+  - Custom cursor + scroll progress present
+  - All nav links use nav-transition-link for animated transitions
+  ============================================================
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Meet the Admins — MSCC</title>
+  <!-- No external fonts needed — using SF Pro system font stack -->
+  <link rel="stylesheet" href="https://unpkg.com/lenis@1.3.4/dist/lenis.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div id="page-transition" aria-hidden="true"></div>
+  <div id="scroll-progress" aria-hidden="true"><div id="scroll-progress-fill"></div></div>
+  <div id="cursor-dot"  aria-hidden="true"></div>
+  <div id="cursor-ring" aria-hidden="true"></div>
+
+  <!-- NAV -->
+  <nav id="navbar">
+    <div class="nav-logo-state">
+      <!--
+        Back button: uses history.back() so the browser's own back
+        stack is used — no broken back-button behaviour.
+        Falls back to index.html if there's no history.
+      -->
+      <a href="index.html" class="nav-brand nav-transition-link">MSCC</a>
+      <ul class="nav-links">
+        <li><a href="index.html#home" class="nav-transition-link">Home</a></li>
+        <li><a href="index.html#about" class="nav-transition-link">About</a></li>
+        <li><a href="index.html#stats" class="nav-transition-link">Community</a></li>
+        <li><a href="admins.html" class="nav-link-active">Admins</a></li>
+      </ul>
+    </div>
+    <div class="nav-search-state">
+      <div class="nav-search-bubble">
+        <span class="search-icon">⌕</span>
+        <input type="text" id="navSearchInput" class="nav-search-input" placeholder="Search admins..." readonly />
+      </div>
+    </div>
+  </nav>
+
+  <!-- PAGE HERO -->
+  <header class="admins-hero">
+    <div class="admins-hero-label">The Team</div>
+    <h1 class="admins-hero-title split-text">
+      Meet the people<br>
+      <span>behind MSCC.</span>
+    </h1>
+    <p class="admins-hero-sub">
+      Eleven students. One shared mission — to keep this community alive,
+      growing, and worth showing up for.
+    </p>
+  </header>
+
+  <!-- ============================================================
+       ADMIN CARD GRID
+       Cards are in a CSS grid but individual cards have
+       margin-top offsets (card-offset-low / card-offset-high)
+       to break the uniform row alignment — creates a natural,
+       editorial stagger without a full masonry library.
+
+       How to add a photo:
+       Add style="background-image: url('photos/name.jpg')"
+       to the .admin-avatar div. The image fills it automatically.
+       ============================================================ -->
+  <section class="admins-grid-section">
+    <div class="admins-grid">
+
+      <!-- Admin 1 — sits at normal height -->
+      <a href="bio-admin1.html" class="admin-card reveal-up" style="--delay: 0s">
+        <div class="admin-avatar">A1</div>
+        <div class="admin-role">Owner</div>
+        <div class="admin-name">Admin Name Here</div>
+        <p class="admin-bio">A short bio about this admin — what they do, their vibe, their role in the server. Keep it to 1–2 sentences.</p>
+        <span class="admin-card-arrow">↗</span>
+      </a>
+
+      <!-- Admin 2 — pushed down (card-offset-low) -->
+      <a href="bio-admin2.html" class="admin-card card-offset-low reveal-up" style="--delay: 0.05s">
+        <div class="admin-avatar">A2</div>
+        <div class="admin-role">Co-Owner</div>
+        <div class="admin-name">Admin Name Here</div>
+        <p class="admin-bio">A short bio about this admin — what they do, their vibe, their role in the server.</p>
+        <span class="admin-card-arrow">↗</span>
+      </a>
+
+      <!-- Admin 3 — normal height -->
+      <a href="bio-admin3.html" class="admin-card reveal-up" style="--delay: 0.1s">
+        <div class="admin-avatar">A3</div>
+        <div class="admin-role">Head Moderator</div>
+        <div class="admin-name">Admin Name Here</div>
+        <p class="admin-bio">A short bio about this admin — what they do, their vibe, their role in the server.</p>
+        <span class="admin-card-arrow">↗</span>
+      </a>
+
+      <!-- Admin 4 — pushed up (card-offset-high) -->
+      <a href="bio-admin4.html" class="admin-card card-offset-high reveal-up" style="--delay: 0.15s">
+        <div class="admin-avatar">A4</div>
+        <div class="admin-role">Moderator</div>
+        <div class="admin-name">Admin Name Here</div>
+        <p class="admin-bio">A short bio about this admin — what they do, their vibe, their role in the server.</p>
+        <span class="admin-card-arrow">↗</span>
+      </a>
+
+      <!-- Admin 5 — normal height -->
+      <a href="bio-admin5.html" class="admin-card reveal-up" style="--delay: 0.2s">
+        <div class="admin-avatar">A5</div>
+        <div class="admin-role">Moderator</div>
+        <div class="admin-name">Admin Name Here</div>
+        <p class="admin-bio">A short bio about this admin — what they do, their vibe, their role in the server.</p>
+        <span class="admin-card-arrow">↗</span>
+      </a>
+
+      <!-- Admin 6 — pushed down -->
+      <a href="bio-admin6.html" class="admin-card card-offset-low reveal-up" style="--delay: 0.25s">
+        <div class="admin-avatar">A6</div>
+        <div class="admin-role">Events Lead</div>
+        <div class="admin-name">Admin Name Here</div>
+        <p class="admin-bio">A short bio about this admin — what they do, their vibe, their role in the server.</p>
+        <span class="admin-card-arrow">↗</span>
+      </a>
+
+      <!-- Admin 7 — pushed up -->
+      <a href="bio-admin7.html" class="admin-card card-offset-high reveal-up" style="--delay: 0.3s">
+        <div class="admin-avatar">A7</div>
+        <div class="admin-role">Art Curator</div>
+        <div class="admin-name">Admin Name Here</div>
+        <p class="admin-bio">A short bio about this admin — what they do, their vibe, their role in the server.</p>
+        <span class="admin-card-arrow">↗</span>
+      </a>
+
+      <!-- Admin 8 — normal height -->
+      <a href="bio-admin8.html" class="admin-card reveal-up" style="--delay: 0.35s">
+        <div class="admin-avatar">A8</div>
+        <div class="admin-role">Community Manager</div>
+        <div class="admin-name">Admin Name Here</div>
+        <p class="admin-bio">A short bio about this admin — what they do, their vibe, their role in the server.</p>
+        <span class="admin-card-arrow">↗</span>
+      </a>
+
+      <!-- Admin 9 — pushed down -->
+      <a href="bio-admin9.html" class="admin-card card-offset-low reveal-up" style="--delay: 0.4s">
+        <div class="admin-avatar">A9</div>
+        <div class="admin-role">Academics Lead</div>
+        <div class="admin-name">Admin Name Here</div>
+        <p class="admin-bio">A short bio about this admin — what they do, their vibe, their role in the server.</p>
+        <span class="admin-card-arrow">↗</span>
+      </a>
+
+      <!-- Admin 10 — pushed up -->
+      <a href="bio-admin10.html" class="admin-card card-offset-high reveal-up" style="--delay: 0.45s">
+        <div class="admin-avatar">A10</div>
+        <div class="admin-role">Tech & Web</div>
+        <div class="admin-name">Admin Name Here</div>
+        <p class="admin-bio">A short bio about this admin — what they do, their vibe, their role in the server.</p>
+        <span class="admin-card-arrow">↗</span>
+      </a>
+
+      <!-- Admin 11 — normal height -->
+      <a href="bio-admin11.html" class="admin-card reveal-up" style="--delay: 0.5s">
+        <div class="admin-avatar">A11</div>
+        <div class="admin-role">Moderator</div>
+        <div class="admin-name">Admin Name Here</div>
+        <p class="admin-bio">A short bio about this admin — what they do, their vibe, their role in the server.</p>
+        <span class="admin-card-arrow">↗</span>
+      </a>
+
+    </div>
+  </section>
+
+  <!-- TRIBUTE SECTION -->
+  <section class="tribute-section">
+    <div class="tribute-inner">
+      <div class="tribute-label reveal-up" style="--delay: 0s">The Backbone</div>
+      <h2 class="tribute-title split-text reveal-up" style="--delay: 0.08s">
+        This server only lives<br>
+        <span>because of them.</span>
+      </h2>
+      <p class="tribute-body reveal-up" style="--delay: 0.16s">
+        MSCC doesn't run on algorithms or automated systems —
+        it runs on <strong>people</strong>. Eleven students who give their time,
+        energy, and creativity to make this community worth showing up to every day.
+        <br><br>
+        Behind every event announcement, every moderated channel, every art showcase,
+        and every study pod — there's a person who cared enough to make it happen.
+        They don't do it for clout. They do it because they believe Mapua students
+        deserve a space that feels like <strong>home</strong>.
+      </p>
+      <div class="tribute-stats reveal-up" style="--delay: 0.24s">
+        <span class="tribute-stat">11 Admins</span>
+        <span class="tribute-stat">1 Vision</span>
+        <span class="tribute-stat">3,000+ Lives Touched</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <a href="index.html" class="footer-brand nav-transition-link">MSCC</a>
+      <span class="footer-copy">© 2025 Mapua Social Community Club — Unofficial. Student-run.</span>
+      <a href="index.html" class="footer-link nav-transition-link">← Back to Home</a>
+    </div>
+  </footer>
+
+  <script src="https://unpkg.com/lenis@1.3.4/dist/lenis.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="https://unpkg.com/split-type@0.3.4/umd/index.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

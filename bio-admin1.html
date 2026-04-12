@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<!--
+  ============================================================
+  MSCC — Admin Bio Template
+  bio-admin1.html — v3
+  ============================================================
+  Changes:
+  - Back button uses history.back() (browser back stack)
+  - Page transition overlay present
+  - Custom cursor + scroll progress present
+  - All scripts loaded in correct order
+  Duplicate this file for bio-admin2.html ... bio-admin11.html
+  ============================================================
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Name — MSCC</title>
+  <!-- No external fonts needed — using SF Pro system font stack -->
+  <link rel="stylesheet" href="https://unpkg.com/lenis@1.3.4/dist/lenis.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div id="page-transition" aria-hidden="true"></div>
+  <div id="scroll-progress" aria-hidden="true"><div id="scroll-progress-fill"></div></div>
+  <div id="cursor-dot"  aria-hidden="true"></div>
+  <div id="cursor-ring" aria-hidden="true"></div>
+
+  <!-- NAV -->
+  <nav id="navbar">
+    <div class="nav-logo-state">
+      <a href="index.html" class="nav-brand nav-transition-link">MSCC</a>
+      <ul class="nav-links">
+        <li><a href="index.html#home" class="nav-transition-link">Home</a></li>
+        <li><a href="index.html#about" class="nav-transition-link">About</a></li>
+        <li><a href="index.html#stats" class="nav-transition-link">Community</a></li>
+        <li><a href="admins.html" class="nav-link-active nav-transition-link">Admins</a></li>
+      </ul>
+    </div>
+    <div class="nav-search-state">
+      <div class="nav-search-bubble">
+        <span class="search-icon">⌕</span>
+        <input type="text" id="navSearchInput" class="nav-search-input" placeholder="Mapua Server" readonly />
+      </div>
+    </div>
+  </nav>
+
+  <!-- BIO HERO -->
+  <header class="bio-hero">
+    <!--
+      Back link uses history.back() via JS — the href="admins.html"
+      is a fallback for no-JS environments. JS intercepts the click.
+    -->
+    <a href="admins.html" class="bio-back nav-transition-link">← Back to Admins</a>
+
+    <!-- EDIT: Change initials. For a photo add style="background-image: url('photos/name.jpg')" -->
+    <div class="bio-avatar">AB</div>
+
+    <div class="bio-role">Role / Position</div>
+    <h1 class="bio-name">Admin Full Name</h1>
+    <div class="bio-handle">@username</div>
+  </header>
+
+  <!-- BIO CONTENT CARDS -->
+  <div class="bio-content">
+
+    <div class="bio-card reveal-up" style="--delay: 0s">
+      <div class="bio-card-label">Online Handle</div>
+      <div class="bio-card-value placeholder">e.g. @yourhandle on Discord, Instagram, etc.</div>
+    </div>
+
+    <div class="bio-card reveal-up" style="--delay: 0.05s">
+      <div class="bio-card-label">Course</div>
+      <div class="bio-card-value placeholder">e.g. BS Computer Science — 3rd Year</div>
+    </div>
+
+    <div class="bio-card bio-card-wide reveal-up" style="--delay: 0.1s">
+      <div class="bio-card-label">Expertise & Skills</div>
+      <div class="bio-card-value placeholder">
+        List your skills, strengths, or areas of expertise here.
+        E.g. Community management · Graphic design · Event planning · Discord moderation
+      </div>
+    </div>
+
+    <div class="bio-card bio-card-wide reveal-up" style="--delay: 0.15s">
+      <div class="bio-card-label">Accomplishments</div>
+      <ul class="bio-accomplishments">
+        <li>Accomplishment or contribution #1 — describe it briefly here</li>
+        <li>Accomplishment or contribution #2 — describe it briefly here</li>
+        <li>Accomplishment or contribution #3 — describe it briefly here</li>
+      </ul>
+    </div>
+
+    <div class="bio-card bio-card-wide reveal-up" style="--delay: 0.2s">
+      <div class="bio-card-label">A Note from Me</div>
+      <div class="bio-card-value placeholder">
+        "Write a short personal message or quote here — something that represents you,
+        why you're part of MSCC, or a message to the community."
+      </div>
+    </div>
+
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <a href="index.html" class="footer-brand nav-transition-link">MSCC</a>
+      <span class="footer-copy">© 2025 Mapua Social Community Club — Unofficial. Student-run.</span>
+      <a href="admins.html" class="footer-link nav-transition-link">← All Admins</a>
+    </div>
+  </footer>
+
+  <script src="https://unpkg.com/lenis@1.3.4/dist/lenis.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="https://unpkg.com/split-type@0.3.4/umd/index.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

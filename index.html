@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<!--
+  ============================================================
+  MSCC — Mapua Social Community Club
+  index.html — v4
+  ============================================================
+  Changes from v3:
+  - Font reverted: body text back to Figtree (no SF Pro system font priority shift)
+  - Page-load progress bar at top (inspired by jcdiamante.com)
+  - Hero shows MSCC logo/wordmark FIRST — visible before any scrolling
+  - Footer: full-width layout instead of centered box
+  - About section: real placeholder copy added
+  - NEW: Community Showcase section (#showcase) — masonry-style art frames
+  - NEW: Meet the Community section (#community) — member highlights
+  - Scroll progress bar moved to TOP (horizontal) — jcdiamante.com style
+  ============================================================
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MSCC — Mapua Social Community Club</title>
+
+  <!--
+    Fonts:
+    - Figtree: our main body/UI font (clean, modern, friendly)
+    - Playfair Display: only used for the big hero title (editorial feel)
+    We preconnect to Google Fonts first to speed up the font load.
+  -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Playfair+Display:ital,wght@0,700;0,800;0,900;1,700&display=swap" rel="stylesheet">
+
+  <!-- Lenis CSS: needed for the smooth scroll library to work correctly -->
+  <link rel="stylesheet" href="https://unpkg.com/lenis@1.3.4/dist/lenis.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ============================================================
+       PAGE LOAD PROGRESS BAR
+       Sits at the very top of the screen. JS animates it from 0
+       to 100% width as the page loads, then fades it out.
+       Inspired by jcdiamante.com's top loading indicator.
+       ============================================================ -->
+  <div id="load-bar">
+    <div id="load-bar-fill"></div>
+  </div>
+
+  <!-- ============================================================
+       PAGE TRANSITION OVERLAY
+       Full-screen orange panel that wipes across the screen when
+       you navigate between pages (e.g. index → admins).
+       JS adds .is-leaving (wipes in) or .is-entering (wipes out).
+       ============================================================ -->
+  <div id="page-transition" aria-hidden="true"></div>
+
+  <!-- ============================================================
+       SCROLL PROGRESS INDICATOR
+       Thin horizontal bar just below the top of the screen.
+       Grows from left to right as you scroll down.
+       ============================================================ -->
+  <div id="scroll-progress" aria-hidden="true">
+    <div id="scroll-progress-fill"></div>
+  </div>
+
+  <!-- ============================================================
+       CUSTOM CURSOR
+       Two elements that replace the default OS cursor on desktop:
+       - #cursor-dot  : a small sharp dot, tracks the cursor exactly
+       - #cursor-ring : a larger ring that follows with a slight delay
+       Both are hidden automatically on touch screens via CSS.
+       ============================================================ -->
+  <div id="cursor-dot"  aria-hidden="true"></div>
+  <div id="cursor-ring" aria-hidden="true"></div>
+
+  <!-- ============================================================
+       NAVIGATION — Dynamic Island style
+       Starts as a pill with logo + links.
+       After scrolling 60px, JS adds .nav-scrolled which shrinks it
+       to a small search bubble. Hovering expands it back.
+       .nav-transition-link = plays the page-transition animation
+       before navigating, so page changes feel smooth.
+       ============================================================ -->
+  <nav id="navbar">
+    <div class="nav-logo-state">
+      <span class="nav-brand">MSCC</span>
+      <ul class="nav-links">
+        <li><a href="#home">Home</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#showcase">Showcase</a></li>
+        <li><a href="#community">Community</a></li>
+        <li><a href="#stats">Stats</a></li>
+        <li><a href="admins.html" class="nav-transition-link">Admins</a></li>
+      </ul>
+    </div>
+    <div class="nav-search-state">
+      <div class="nav-search-bubble">
+        <span class="search-icon">⌕</span>
+        <input type="text" id="navSearchInput" class="nav-search-input" placeholder="Mapua Server" readonly />
+      </div>
+    </div>
+  </nav>
+
+
+  <!-- ============================================================
+       HERO SECTION
+       The first thing the user sees. Goal: show the MSCC name
+       prominently above the fold without needing to scroll.
+
+       Structure (top to bottom):
+       1. Aurora canvas — animated colour wash background
+       2. Floating blobs — soft orange glows
+       3. Hero content — badge → MSCC wordmark → subtitle → CTAs
+       4. Scroll hint arrow — bounces to invite scrolling
+       ============================================================ -->
+  <section id="home" class="hero-section">
+
+    <!-- Aurora: drawn by JS on a canvas element. Pure Canvas 2D API,
+         no library. Drifting colour orbs give the hero a living feel. -->
+    <canvas id="aurora-canvas" aria-hidden="true"></canvas>
+
+    <!-- Blobs: simple CSS keyframe animated glows behind the content -->
+    <div class="hero-bg-blob blob-1"></div>
+    <div class="hero-bg-blob blob-2"></div>
+
+    <div class="hero-content">
+
+      <!-- Small badge above the title — acts like a category label -->
+      <div class="hero-badge">
+        <span class="badge-dot"></span>
+        Mapua University • Discord Community
+      </div>
+
+      <!--
+        MSCC wordmark — the very first thing the user's eye lands on.
+        .hero-eyebrow   = "Mapua Social Community Club" in Figtree, uppercase
+        .hero-title-big = "MSCC" huge, Playfair Display italic
+        .hero-morph-wrapper/.hero-morph-word = cycling word below
+      -->
+      <div class="hero-wordmark">
+        <span class="hero-eyebrow">Mapua Social Community Club</span>
+        <h1 class="hero-title-big">MSCC</h1>
+        <div class="hero-morph-line">
+          <span class="hero-morph-prefix">Where students </span>
+          <span class="hero-morph-wrapper">
+            <span class="hero-morph-word" id="morphWord">Connect.</span>
+          </span>
+        </div>
+      </div>
+
+      <p class="hero-subtitle">
+        An unofficial, student-run community of Mapua University —
+        built for students, by students. No admin oversight. Just us.
+      </p>
+
+      <!-- .magnetic = JS applies a subtle cursor-following drift on hover -->
+      <div class="hero-cta">
+        <a href="#about" class="btn-primary magnetic">Discover MSCC</a>
+        <a href="#stats"  class="btn-secondary magnetic">Join Now →</a>
+      </div>
+
+    </div>
+
+    <!-- Arrow at the bottom — bounces to hint at scrolling -->
+    <div class="scroll-hint">
+      <div class="scroll-arrow"></div>
+    </div>
+
+  </section>
+
+
+  <!-- ============================================================
+       ABOUT SECTION
+       Two-column layout: text left, 3D carousel right.
+       .split-text on the heading = JS (SplitType + GSAP) animates
+       each letter in one by one as the section scrolls into view.
+       .reveal-left / .reveal-right = simpler fade+slide reveal.
+       ============================================================ -->
+  <section id="about" class="about-section">
+
+    <div class="about-text reveal-left">
+      <div class="about-label">About Us</div>
+      <h2 class="about-title split-text">
+        A community built on<br>
+        <span class="about-title-accent">growth & connection.</span>
+      </h2>
+
+      <p class="about-intro">
+        MSCC started as a small Discord server with a handful of Mapua students
+        who just wanted a place to talk outside of class. Three years later,
+        we've grown into one of the most active unofficial student communities
+        at the university — over 3,000 members strong, all student-run, zero
+        institutional backing.
+      </p>
+
+      <!-- Each feature block = icon + heading + paragraph -->
+      <div class="about-feature reveal-up" style="--delay: 0s">
+        <div class="feature-icon">🎓</div>
+        <div class="feature-text">
+          <h3>Who We Are</h3>
+          <p>Students, by students. No faculty oversight, no school branding —
+          just a group of Mapua people building something they actually want
+          to be part of.</p>
+        </div>
+      </div>
+
+      <div class="about-feature reveal-up" style="--delay: 0.12s">
+        <div class="feature-icon">💬</div>
+        <div class="feature-text">
+          <h3>What We Do</h3>
+          <p>Academic discussion channels, monthly art showcases, study pod
+          matchmaking, game nights, and a whole lot of memes in between.
+          There's a channel for everyone.</p>
+        </div>
+      </div>
+
+      <div class="about-feature reveal-up" style="--delay: 0.24s">
+        <div class="feature-icon">🌐</div>
+        <div class="feature-text">
+          <h3>Open to Everyone</h3>
+          <p>Freshman still figuring out NSTP, or a senior about to defend —
+          MSCC is open to all Mapua students, no gatekeeping, no requirements.</p>
+        </div>
+      </div>
+
+      <a href="admins.html" class="btn-primary about-cta magnetic nav-transition-link">Meet the Team</a>
+    </div>
+
+    <!-- 3D Carousel — right side of the about section -->
+    <div class="about-carousel-wrapper reveal-right">
+      <div class="carousel-stage" id="carouselStage">
+        <div class="carousel-card card-active" data-index="0">
+          <div class="card-inner">
+            <div class="card-image"><div class="card-image-placeholder"><span class="card-emoji">🚀</span></div></div>
+            <div class="card-caption"><span class="card-tag">Growth</span><p>From 0 to 3,000+ members strong</p></div>
+          </div>
+        </div>
+        <div class="carousel-card card-next" data-index="1">
+          <div class="card-inner">
+            <div class="card-image"><div class="card-image-placeholder"><span class="card-emoji">🎨</span></div></div>
+            <div class="card-caption"><span class="card-tag">Creativity</span><p>Monthly art jams & showcases</p></div>
+          </div>
+        </div>
+        <div class="carousel-card card-prev" data-index="2">
+          <div class="card-inner">
+            <div class="card-image"><div class="card-image-placeholder"><span class="card-emoji">📚</span></div></div>
+            <div class="card-caption"><span class="card-tag">Academics</span><p>Study pods, resources & peer help</p></div>
+          </div>
+        </div>
+        <div class="carousel-card card-behind" data-index="3">
+          <div class="card-inner">
+            <div class="card-image"><div class="card-image-placeholder"><span class="card-emoji">🎮</span></div></div>
+            <div class="card-caption"><span class="card-tag">Events</span><p>Game nights, tournaments & more</p></div>
+          </div>
+        </div>
+      </div>
+      <div class="carousel-dots">
+        <button class="dot dot-active" data-target="0" aria-label="Card 1"></button>
+        <button class="dot" data-target="1" aria-label="Card 2"></button>
+        <button class="dot" data-target="2" aria-label="Card 3"></button>
+        <button class="dot" data-target="3" aria-label="Card 4"></button>
+      </div>
+    </div>
+
+  </section>
+
+
+  <!-- ============================================================
+       COMMUNITY SHOWCASE SECTION
+       A grid of "artwork frames" — like an online gallery wall.
+       Each frame is a showcase-card with a coloured placeholder
+       (replace the placeholder div with a real <img> when ready).
+       Layout: masonry-inspired CSS grid with mixed card sizes.
+       ============================================================ -->
+  <section id="showcase" class="showcase-section">
+
+    <div class="showcase-header reveal-up">
+      <div class="about-label">Community Showcase</div>
+      <h2 class="showcase-title">
+        What our members<br>
+        <span class="showcase-accent">create & share.</span>
+      </h2>
+      <p class="showcase-sub">
+        From digital art to memes to study guides — MSCC members make
+        cool stuff. Here's a small taste of what's been shared in the server.
+      </p>
+    </div>
+
+    <!--
+      The grid is set up so some cards are "tall" (.frame-tall) and
+      some are "wide" (.frame-wide). This gives it a gallery-wall feel
+      instead of boring equal-size boxes.
+    -->
+    <div class="showcase-grid">
+
+      <div class="showcase-frame frame-tall reveal-up" style="--delay:0s">
+        <div class="frame-inner">
+          <div class="frame-art" style="--hue:20">
+            <span class="frame-emoji">🎨</span>
+          </div>
+          <div class="frame-meta">
+            <span class="frame-tag">Digital Art</span>
+            <p class="frame-title">Neon Cityscape Series</p>
+            <p class="frame-author">by @sketchkid</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="showcase-frame reveal-up" style="--delay:0.08s">
+        <div class="frame-inner">
+          <div class="frame-art" style="--hue:200">
+            <span class="frame-emoji">💻</span>
+          </div>
+          <div class="frame-meta">
+            <span class="frame-tag">Dev Project</span>
+            <p class="frame-title">Campus Map PWA</p>
+            <p class="frame-author">by @devmapua</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="showcase-frame reveal-up" style="--delay:0.16s">
+        <div class="frame-inner">
+          <div class="frame-art" style="--hue:280">
+            <span class="frame-emoji">📸</span>
+          </div>
+          <div class="frame-meta">
+            <span class="frame-tag">Photography</span>
+            <p class="frame-title">Makati After Dark</p>
+            <p class="frame-author">by @lenscap</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="showcase-frame frame-wide reveal-up" style="--delay:0.24s">
+        <div class="frame-inner">
+          <div class="frame-art" style="--hue:140">
+            <span class="frame-emoji">🎵</span>
+          </div>
+          <div class="frame-meta">
+            <span class="frame-tag">Music</span>
+            <p class="frame-title">Lo-fi Study Beats Vol. 3</p>
+            <p class="frame-author">by @beatsbymapua</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="showcase-frame frame-tall reveal-up" style="--delay:0.12s">
+        <div class="frame-inner">
+          <div class="frame-art" style="--hue:350">
+            <span class="frame-emoji">✍️</span>
+          </div>
+          <div class="frame-meta">
+            <span class="frame-tag">Writing</span>
+            <p class="frame-title">Thesis Survival Guide</p>
+            <p class="frame-author">by @gradgrind</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="showcase-frame reveal-up" style="--delay:0.20s">
+        <div class="frame-inner">
+          <div class="frame-art" style="--hue:55">
+            <span class="frame-emoji">🎮</span>
+          </div>
+          <div class="frame-meta">
+            <span class="frame-tag">Game Dev</span>
+            <p class="frame-title">Pixel Dungeon Prototype</p>
+            <p class="frame-author">by @pixelforge</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Call to action below the grid -->
+    <div class="showcase-cta reveal-up" style="--delay:0.3s">
+      <p>Want your work featured? Drop it in <strong>#showcase</strong> on our Discord.</p>
+      <a href="#stats" class="btn-secondary magnetic">Join the Server →</a>
+    </div>
+
+  </section>
+
+
+  <!-- ============================================================
+       MEET THE COMMUNITY SECTION
+       A horizontal scrolling row of member "profile cards".
+       Each card shows a nickname, role/vibe, and a short quote.
+       These are placeholder cards — swap in real member data later.
+       The row auto-scrolls on desktop via JS, and is draggable.
+       ============================================================ -->
+  <section id="community" class="community-section">
+
+    <div class="community-header reveal-up">
+      <div class="about-label">Meet the Community</div>
+      <h2 class="community-title">
+        3,000+ members.<br>
+        <span class="community-accent">Real people. Real vibes.</span>
+      </h2>
+      <p class="community-sub">
+        MSCC is more than a Discord server — it's the people in it.
+        Here are just a few of the faces that make this place what it is.
+      </p>
+    </div>
+
+    <!--
+      .member-track is the scrolling container.
+      JS makes it draggable (click and drag left/right on desktop).
+      It auto-scrolls slowly on its own too.
+    -->
+    <div class="member-scroll-wrapper">
+      <div class="member-track" id="memberTrack">
+
+        <div class="member-card">
+          <div class="member-avatar" style="--av-hue:20">🦊</div>
+          <div class="member-info">
+            <span class="member-name">@foxbyte</span>
+            <span class="member-vibe">CS Junior • Dev enthusiast</span>
+            <p class="member-quote">"MSCC is where I found my thesis groupmates AND my best friends."</p>
+          </div>
+        </div>
+
+        <div class="member-card">
+          <div class="member-avatar" style="--av-hue:200">🌊</div>
+          <div class="member-info">
+            <span class="member-name">@wavekid</span>
+            <span class="member-vibe">CE Sophomore • Art enjoyer</span>
+            <p class="member-quote">"The art channel is genuinely one of the best things on the internet."</p>
+          </div>
+        </div>
+
+        <div class="member-card">
+          <div class="member-avatar" style="--av-hue:120">🌱</div>
+          <div class="member-info">
+            <span class="member-name">@sproutz</span>
+            <span class="member-vibe">Architecture • Sketch addict</span>
+            <p class="member-quote">"I posted my first artwork here. The feedback genuinely changed how I draw."</p>
+          </div>
+        </div>
+
+        <div class="member-card">
+          <div class="member-avatar" style="--av-hue:280">🔮</div>
+          <div class="member-info">
+            <span class="member-name">@voidptr</span>
+            <span class="member-vibe">IT Senior • Night owl coder</span>
+            <p class="member-quote">"Stayed up until 3am with 5 others debugging a project. Worth it."</p>
+          </div>
+        </div>
+
+        <div class="member-card">
+          <div class="member-avatar" style="--av-hue:350">🔥</div>
+          <div class="member-info">
+            <span class="member-name">@ember</span>
+            <span class="member-vibe">ECE Freshman • Just joined</span>
+            <p class="member-quote">"Joined on my first week at Mapua. Already feel like I belong."</p>
+          </div>
+        </div>
+
+        <div class="member-card">
+          <div class="member-avatar" style="--av-hue:55">⚡</div>
+          <div class="member-info">
+            <span class="member-name">@zltnmrc</span>
+            <span class="member-vibe">MechE • Meme lord</span>
+            <p class="member-quote">"If you're not in MSCC you're missing out on the best study breaks."</p>
+          </div>
+        </div>
+
+        <div class="member-card">
+          <div class="member-avatar" style="--av-hue:170">🌿</div>
+          <div class="member-info">
+            <span class="member-name">@leafnode</span>
+            <span class="member-vibe">CS Senior • Open source fan</span>
+            <p class="member-quote">"MSCC taught me more about working with people than any subject did."</p>
+          </div>
+        </div>
+
+      </div>
+      <!-- Gradient fade on the edges to hint there's more to scroll -->
+      <div class="member-fade-left"  aria-hidden="true"></div>
+      <div class="member-fade-right" aria-hidden="true"></div>
+    </div>
+
+  </section>
+
+
+  <!-- ============================================================
+       STATS SECTION
+       Four animated numbers that count up when scrolled into view.
+       data-target = the final number to count to
+       data-suffix = the text appended after ("+", " yrs", "%")
+       ============================================================ -->
+  <section id="stats" class="stats-section">
+    <div class="stats-inner">
+
+      <div class="stat-item reveal-up" style="--delay: 0s">
+        <div class="stat-number">
+          <span class="counter" data-target="3000" data-suffix="+">0</span>
+        </div>
+        <div class="stat-label">Members & growing</div>
+      </div>
+
+      <div class="stat-divider"></div>
+
+      <div class="stat-item reveal-up" style="--delay: 0.1s">
+        <div class="stat-number">
+          <span class="counter" data-target="2" data-suffix=" yrs">0</span>
+        </div>
+        <div class="stat-label">Years running strong</div>
+      </div>
+
+      <div class="stat-divider"></div>
+
+      <div class="stat-item reveal-up" style="--delay: 0.2s">
+        <div class="stat-number">
+          <span class="counter" data-target="50" data-suffix="+">0</span>
+        </div>
+        <div class="stat-label">Events hosted</div>
+      </div>
+
+      <div class="stat-divider"></div>
+
+      <div class="stat-item reveal-up" style="--delay: 0.3s">
+        <div class="stat-number">
+          <span class="counter" data-target="100" data-suffix="%">0</span>
+        </div>
+        <div class="stat-label">Student-run, unofficial</div>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ============================================================
+       FOOTER
+       Full-width layout (no centering container) — matches the
+       edges of the page rather than floating in the middle.
+       Three columns: brand left, copyright center, link right.
+       ============================================================ -->
+  <footer class="site-footer">
+    <div class="footer-top">
+      <div class="footer-brand-block">
+        <span class="footer-brand">MSCC</span>
+        <span class="footer-tagline">Mapua Social Community Club</span>
+      </div>
+      <nav class="footer-nav">
+        <a href="#home">Home</a>
+        <a href="#about">About</a>
+        <a href="#showcase">Showcase</a>
+        <a href="#community">Community</a>
+        <a href="admins.html" class="nav-transition-link">Admins</a>
+      </nav>
+    </div>
+    <div class="footer-bottom">
+      <span class="footer-copy">© 2025 Mapua Social Community Club — Unofficial. Student-run. Not affiliated with Mapua University.</span>
+      <a href="admins.html" class="footer-link nav-transition-link">Meet the Admins →</a>
+    </div>
+  </footer>
+
+
+  <!-- ============================================================
+       SCRIPTS — ORDER MATTERS:
+       1. Lenis    — smooth scroll library (must load first)
+       2. GSAP     — animation engine
+       3. ScrollTrigger — GSAP plugin for scroll-based animations
+       4. SplitType — splits text into characters for letter animations
+       5. script.js — our own code (uses all of the above)
+       ============================================================ -->
+  <script src="https://unpkg.com/lenis@1.3.4/dist/lenis.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="https://unpkg.com/split-type@0.3.4/umd/index.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
