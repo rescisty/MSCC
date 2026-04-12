@@ -868,13 +868,18 @@
     let rightY = 0;  // current translateY of right track
 
     /* ── SNAP TO SECTION ── */
-    function snapTo(idx) {
+    function snapTo(idx, skipHistory) {
       if (snapping) return;
       if (idx < 0 || idx >= TOTAL) return;
 
       const dir    = idx > current ? 'down' : 'up';
       snapping     = true;
       delta        = 0;
+
+      // Push a history entry so the browser Back button steps through sections
+      if (!skipHistory) {
+        history.pushState({ section: idx }, '', '#s' + idx);
+      }
 
       const VH     = window.innerHeight;
       const targetY = -idx * VH;
@@ -976,6 +981,14 @@
       setTimeout(() => { window.location.assign('main-site.html'); }, 800);
     }
 
+    /* ── HISTORY: browser Back/Forward steps through sections ── */
+    window.addEventListener('popstate', (e) => {
+      const idx = (e.state && typeof e.state.section === 'number') ? e.state.section : 0;
+      // If we're back at section 0 and there's no state, go back one more
+      // (this handles Back from section 0 → index.html correctly)
+      snapTo(idx, true /* skipHistory — don't push another entry */);
+    });
+
     /* ── PROGRESS DOTS ── */
     for (let i = 0; i < TOTAL; i++) {
       const d = document.createElement('div');
@@ -989,6 +1002,9 @@
     window.addEventListener('DOMContentLoaded', () => {});
     window.addEventListener('load', () => {
       tracks = buildTracks();
+      // Seed history so section 0 has a state entry. replaceState so
+      // index.html is still skipped when Back is pressed from here.
+      history.replaceState({ section: 0 }, '', '#s0');
       updateUI(0);
       setTimeout(() => document.body.classList.add('ready'), 80);
     });
