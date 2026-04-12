@@ -76,7 +76,7 @@
       pointer-events: none;
       transition: opacity 0.9s ease;
     }
-    #fade.active { opacity: 1; }
+    #fade.active { opacity: 1; pointer-events: none; }
   </style>
 </head>
 <body>
@@ -161,9 +161,11 @@
           s.x = cx + s.grabOffsetX;
           s.y = cy + s.grabOffsetY;
 
-          // Store velocity so release feels natural
-          s.vx = (s.x - prevX) / dt;
-          s.vy = (s.y - prevY) / dt;
+          // Smooth velocity for release - lerp toward instantaneous value to avoid spikes
+          const rawVx = (s.x - prevX) / dt;
+          const rawVy = (s.y - prevY) / dt;
+          s.vx += (rawVx - s.vx) * 0.4;
+          s.vy += (rawVy - s.vy) * 0.4;
 
           // Slight tilt based on horizontal speed
           const tiltTarget = (s.x - prevX) / dt * 0.003;
