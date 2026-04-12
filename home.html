@@ -967,13 +967,13 @@
       }
 
       setTimeout(() => { overlay.classList.add('active'); }, 1000);
-      setTimeout(() => { window.location.href = 'main-site.html'; }, 1800);
+      setTimeout(() => { window.location.assign('main-site.html'); }, 1800);
     }
 
     function goToMainSite(e) {
       if (e) e.preventDefault();
       overlay.classList.add('active');
-      setTimeout(() => { window.location.href = 'main-site.html'; }, 800);
+      setTimeout(() => { window.location.assign('main-site.html'); }, 800);
     }
 
     /* ── PROGRESS DOTS ── */
@@ -991,6 +991,32 @@
       tracks = buildTracks();
       updateUI(0);
       setTimeout(() => document.body.classList.add('ready'), 80);
+    });
+
+    /* ── RESIZE / FULLSCREEN FIX ──
+       buildTracks() bakes pixel heights at load time. When the viewport
+       changes (F11, window resize, browser chrome toggle) all slots must
+       be re-measured and the tracks repositioned to the current section. */
+    let resizeTimer = null;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => {
+        const VH = window.innerHeight;
+
+        // Update every slot in both tracks
+        [tracks.leftTrack, tracks.rightTrack].forEach(track => {
+          Array.from(track.children).forEach(slot => {
+            slot.style.height = VH + 'px';
+          });
+        });
+
+        // Jump tracks to correct position for current section (no animation)
+        const targetY = -current * VH;
+        leftY  = targetY;
+        rightY = targetY;
+        tracks.leftTrack.style.transform  = `translateY(${targetY}px)`;
+        tracks.rightTrack.style.transform = `translateY(${targetY}px)`;
+      }, 80);
     });
   </script>
 </body>
