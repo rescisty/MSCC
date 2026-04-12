@@ -11,7 +11,6 @@
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
-    /* Body is yellow — no flash ever */
     body {
       background: #f4c430;
       width: 100vw;
@@ -22,8 +21,6 @@
       justify-content: center;
     }
 
-    /* White canvas — sits between body and curtain. 
-       This is where the letters live. */
     #canvas {
       position: fixed;
       inset: 0;
@@ -102,38 +99,37 @@
     const curtain  = document.getElementById('curtain');
     const fadeEl   = document.getElementById('fade');
 
-    const GRAVITY  = 4900;   // px/s² — natural, not exaggerated
-    const RESTITUTION = 0.15; // how much velocity survives the bounce — small, realistic
-    const STOP_VEL = 60;     // below this on bounce, just stop
+    const GRAVITY     = 4900;
+    const RESTITUTION = 0.15;
+    const STOP_VEL    = 60;
 
     const START_Y = -(window.innerHeight * 1.15);
 
+    // World space: origin = viewport center.
+    // s.x / s.y are offsets from that origin.
     const state = letters.map(() => ({
-      // World position of letter center
-      x:  0,
-      y:  START_Y,
-      vx: 0,
-      vy: 0,
-      // Rotation
-      rot:  0,
-      vrot: 0,
-      // Pendulum state (only active while dragging)
-      pendAngle:  0,   // radians from vertical
-      pendVAngle: 0,   // angular velocity rad/s
-      active:  false,
+      x: 0, y: START_Y,
+      vx: 0, vy: 0,
+      rot: 0, vrot: 0,
+      active: false,
       settled: false,
+      grabOffsetX: 0,  // world-space delta: letter pos minus cursor pos at grab time
+      grabOffsetY: 0,
     }));
 
-    let cursorX    = window.innerWidth  / 2;
-    let cursorY    = window.innerHeight / 2;
     let allSettled = false;
     let rafId      = null;
     let lastTime   = null;
+    let dragging   = null;
+
+    // Track cursor in screen space
+    let cursorX = window.innerWidth  / 2;
+    let cursorY = window.innerHeight / 2;
 
     // Open curtain
     setTimeout(() => curtain.classList.add('open'), 200);
 
-    // Drop with 200ms stagger
+    // Drop letters with stagger
     letters.forEach((el, i) => {
       setTimeout(() => {
         state[i].active = true;
@@ -142,15 +138,10 @@
       }, 900 + i * 200);
     });
 
-    // Pivot position (cursor) updated each mousemove
-    let pivotX = window.innerWidth  / 2;
-    let pivotY = window.innerHeight / 2;
-
     function tick(ts) {
       if (!lastTime) lastTime = ts;
       const dt = Math.min((ts - lastTime) / 1000, 0.05);
       lastTime = ts;
-      dt_last  = dt;
       let anyMoving = false;
 
       letters.forEach((el, i) => {
@@ -158,25 +149,25 @@
         if (!s.active) return;
 
         if (dragging === i) {
-          // ── PENDULUM ──
-          // Pivot is cursor. Letter hangs on a "rope" of length = distance
-          // from grab point to letter center at the moment of pickup.
-          // Gravity pulls the angle toward 0 (hanging straight down).
-          const g   = GRAVITY; // reuse same gravity constant
-          const L   = s.pendLength; // rope length in px
+          // ── DIRECT DRAG ──
+          // Convert cursor screen pos → world pos (origin = viewport center).
+          // targetX/Y = cursorWorld + grabOffset.
+          // Since grabOffset = letterWorld - cursorWorld at mousedown,
+          // this means the grabbed point on the letter stays exactly under the cursor.
+          const cx = cursorX - window.innerWidth  / 2;
+          const cy = cursorY - window.innerHeight / 2;
+          const prevX = s.x;
+          const prevY = s.y;
+          s.x = cx + s.grabOffsetX;
+          s.y = cy + s.grabOffsetY;
 
-          // Pendulum equation: α = -(g/L) * sin(θ) - damping
-          const alpha = -(g / L) * Math.sin(s.pendAngle) - s.pendVAngle * 1.8;
-          s.pendVAngle += alpha * dt;
-          s.pendAngle  += s.pendVAngle * dt;
+          // Store velocity so release feels natural
+          s.vx = (s.x - prevX) / dt;
+          s.vy = (s.y - prevY) / dt;
 
-          // Letter center = pivot + rope in direction of angle
-          // angle=0 → hangs straight down, positive = swings right
-          s.x = pivotX + Math.sin(s.pendAngle) * L - window.innerWidth  / 2;
-          s.y = pivotY + Math.cos(s.pendAngle) * L - window.innerHeight / 2;
-
-          // Visual rotation follows the swing angle
-          s.rot = s.pendAngle * (180 / Math.PI);
+          // Slight tilt based on horizontal speed
+          const tiltTarget = (s.x - prevX) / dt * 0.003;
+          s.rot += (tiltTarget - s.rot) * Math.min(dt * 12, 1);
 
           anyMoving = true;
 
@@ -221,39 +212,28 @@
       rafId = anyMoving ? requestAnimationFrame(tick) : null;
     }
 
-    let dragging = null;
-    let dt_last  = 0.016;
-
     window.addEventListener('mousedown', e => {
-      if (!allSettled) return;
+
       letters.forEach((el, i) => {
+        const s = state[i];
+        if (!s.active) return; // not yet dropped
         const rect = el.getBoundingClientRect();
         if (
           e.clientX >= rect.left && e.clientX <= rect.right &&
           e.clientY >= rect.top  && e.clientY <= rect.bottom
         ) {
           dragging = i;
-          const s = state[i];
           s.settled = false;
 
-          // Pivot = cursor (grab point in screen space)
-          pivotX = e.clientX;
-          pivotY = e.clientY;
+          // Cursor in world space at the moment of grab
+          const cursorWorldX = e.clientX - window.innerWidth  / 2;
+          const cursorWorldY = e.clientY - window.innerHeight / 2;
 
-          // Letter center in screen space
-          const lcx = rect.left + rect.width  / 2;
-          const lcy = rect.top  + rect.height / 2;
-
-          // Rope vector from pivot to letter center
-          const rx = lcx - pivotX;
-          const ry = lcy - pivotY;
-
-          // Rope length
-          s.pendLength = Math.sqrt(rx * rx + ry * ry) || 80;
-
-          // Initial angle from vertical (atan2: right = positive)
-          s.pendAngle  = Math.atan2(rx, ry);
-          s.pendVAngle = 0;
+          // Grab offset = letter world pos minus cursor world pos.
+          // Adding this back to cursorWorld during drag keeps the
+          // exact grab point pinned under the cursor.
+          s.grabOffsetX = s.x - cursorWorldX;
+          s.grabOffsetY = s.y - cursorWorldY;
 
           s.vx = 0;
           s.vy = 0;
@@ -267,34 +247,26 @@
     window.addEventListener('mousemove', e => {
       cursorX = e.clientX;
       cursorY = e.clientY;
-      if (dragging !== null) {
-        // Move the pivot with the cursor
-        pivotX = e.clientX;
-        pivotY = e.clientY;
-      }
     });
 
     window.addEventListener('mouseup', () => {
       if (dragging !== null) {
         const s = state[dragging];
-        // Convert pendulum angular velocity back to linear velocity
-        const L = s.pendLength;
-        // Tangential velocity = ω × r, perpendicular to rope
-        const angle = s.pendAngle;
-        const vTan  = s.pendVAngle * L;
-        // Tangent direction is perpendicular to rope (cos, -sin)
-        s.vx = vTan *  Math.cos(angle) * 0.4;
-        s.vy = vTan * -Math.sin(angle) * 0.4;
-        // Carry some of the swing rotation into free rotation
-        s.vrot = s.pendVAngle * 60;
+        // Carry drag velocity into free fall; cap it to avoid rocket launches
+        const cap = 2000;
+        s.vx = Math.max(-cap, Math.min(cap, s.vx));
+        s.vy = Math.max(-cap, Math.min(cap, s.vy));
+        s.vrot = s.vx * 0.05;
         dragging = null;
         if (!rafId) { lastTime = null; rafId = requestAnimationFrame(tick); }
       }
     });
 
+    // location.replace so index.html is NOT in browser history.
+    // Pressing Back from home.html skips index.html correctly.
     setTimeout(() => {
       fadeEl.classList.add('active');
-      setTimeout(() => { window.location.href = 'home.html'; }, 950);
+      setTimeout(() => { window.location.replace('home.html'); }, 950);
     }, 4400);
   </script>
 </body>
