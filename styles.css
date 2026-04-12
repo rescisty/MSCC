@@ -1,0 +1,44 @@
+/* ============================================================
+   STYLES.CSS — Shared styles across all MSCC pages
+   Main accent: orange
+   Font: San Francisco (SF Pro) — system font on Apple devices
+   ============================================================ */
+
+:root {
+  /* ── San Francisco font stack ──
+     SF Pro loads automatically on macOS/iOS.
+     Falls back to Segoe UI on Windows, then generic sans. */
+  --font: -apple-system, BlinkMacSystemFont, "SF Pro Display",
+          "SF Pro Text", "Segoe UI", Helvetica, Arial, sans-serif;
+
+  /* ── Orange palette ── */
+  --orange:       #f4622a;   /* primary brand orange */
+  --orange-dark:  #c94a1a;   /* curtain / deep shade */
+  --orange-deep:  #7a2a08;   /* very dark warm bg */
+  --orange-light: #f7845a;   /* lighter accent */
+  --dark:         #180d06;   /* near-black warm dark */
+  --white:        #ffffff;
+
+  /* ── Per-section split colors (left half / right half, close siblings) ── */
+  --s1-l: #e6303d;  --s1-r: #cc2a36;
+  --s2-l: #1560bd;  --s2-r: #1050a5;
+  --s3-l: #2a9d8f;  --s3-r: #208a7d;
+  --s4-l: #d4920a;  --s4-r: #bb8108;
+  --s5-l: #264653;  --s5-r: #1d3840;
+  --s6-l: #3d2445;  --s6-r: #301c38;
+}
+
+/* ── Reset ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* ── Global: hide scrollbar, lock scroll (JS controls it) ── */
+html, body {
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  font-family: var(--font);
+  -webkit-font-smoothing: antialiased;
+}
+::-webkit-scrollbar { display: none; }

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>mscc — main site</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    /* ============================================================
+       MAIN-SITE.HTML — Destination after "Let's Begin" or finale CTA.
+       Replace the content in .main-content with your real site.
+       The orange color and SF font are inherited from styles.css.
+       ============================================================ */
+
+    body {
+      overflow: auto;
+      background: var(--dark);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      opacity: 0;
+      transition: opacity 0.8s ease;
+    }
+    body.ready { opacity: 1; }
+
+    .main-content {
+      text-align: center;
+      color: var(--white);
+      padding: 4rem 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    /* ⚠️ IMAGE ZONE: Replace emoji with main site hero logo or illustration
+       <img src="assets/main-logo.png" style="max-width:200px;object-fit:contain;" /> */
+    .main-icon { font-size: 4rem; }
+
+    .main-logo {
+      font-size: clamp(4.5rem, 12vw, 10rem);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      /* Orange gradient text */
+      background: linear-gradient(135deg, var(--orange-light) 0%, var(--orange) 60%, var(--orange-dark) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1;
+    }
+
+    .main-tagline {
+      font-size: clamp(0.9rem, 1.8vw, 1.15rem);
+      color: rgba(255,255,255,0.4);
+      font-style: italic;
+      font-weight: 300;
+      letter-spacing: 0.04em;
+      max-width: 460px;
+      line-height: 1.6;
+    }
+
+    .back-link {
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.3);
+      text-decoration: none;
+      border-bottom: 1px solid rgba(255,255,255,0.12);
+      padding-bottom: 3px;
+      margin-top: 1rem;
+      transition: color 0.3s, border-color 0.3s;
+    }
+    .back-link:hover {
+      color: var(--orange-light);
+      border-color: var(--orange-light);
+    }
+
+    /* Placeholder notice — remove once real site is built */
+    .placeholder-notice {
+      position: fixed;
+      bottom: 2rem; left: 50%;
+      transform: translateX(-50%);
+      background: rgba(244,98,42,0.08);
+      border: 1px solid rgba(244,98,42,0.2);
+      padding: 8px 22px;
+      font-size: 0.72rem;
+      color: rgba(244,98,42,0.45);
+      letter-spacing: 0.1em;
+      white-space: nowrap;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="main-content">
+    <div class="main-icon">🍆🍆🍆🍆🍆🍆</div>
+    <div class="main-logo">mscc</div>
+    <p class="main-tagline">there is nothing here yet because rescisty is a dogshit vibecoder</p>
+    <a class="back-link" href="home.html">← back to home</a>
+  </div>
+
+  <div class="placeholder-notice">⚠ PLACEHOLDER — sybau morons i have nothing yet</div>
+
+  <script>
+    // Fade in on arrival
+    window.addEventListener('load', () => {
+      setTimeout(() => document.body.classList.add('ready'), 100);
+    });
+  </script>
+</body>
+</html>
