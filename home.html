@@ -999,14 +999,23 @@
 
     /* ── INIT ── */
     let tracks;
-    window.addEventListener('DOMContentLoaded', () => {});
-    window.addEventListener('load', () => {
+
+    function initPage() {
       tracks = buildTracks();
-      // Seed history so section 0 has a state entry. replaceState so
-      // index.html is still skipped when Back is pressed from here.
       history.replaceState({ section: 0 }, '', '#s0');
       updateUI(0);
       setTimeout(() => document.body.classList.add('ready'), 80);
+    }
+
+    // 'pageshow' fires on both normal load AND bfcache restores.
+    // e.persisted === true means the browser thawed a frozen snapshot —
+    // force a fresh reload so buildTracks() and the fade-in actually run.
+    window.addEventListener('pageshow', (e) => {
+      if (e.persisted) {
+        window.location.reload();
+      } else {
+        initPage();
+      }
     });
 
     /* ── RESIZE / FULLSCREEN FIX ──
